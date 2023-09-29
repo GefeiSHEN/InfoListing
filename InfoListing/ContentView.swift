@@ -16,7 +16,7 @@ struct ContentView: View {
             Text("Hello, world!")
                 .onAppear{
                     Task {
-                        let list = try? await NetworkManager().fetchContent()
+                        let list = try? await NetworkManager().fetchList()
                         print(list)
                     }
 

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NetworkManaging {
-    func fetchContent() async throws -> [NetworkManager.ListItem]
+    func fetchList() async throws -> [NetworkManager.ListItem]
 }
 
 class NetworkManager: NetworkManaging {
@@ -17,8 +17,14 @@ class NetworkManager: NetworkManaging {
     init(session: URLSession = URLSession.shared) {
         self.session = session
     }
+    
+    /**
+     Retrieves a list of Items from API.
 
-    func fetchContent() async throws -> [ListItem] {
+     - Returns: An array of ListInfo objects.
+     - Throws: `NetworkManager.NetworkError`
+     */
+    func fetchList() async throws -> [ListItem] {
         guard let url = URL(string: "https://fetch-hiring.s3.amazonaws.com/hiring.json") else {
             throw NetworkError.invalidURL
         }
