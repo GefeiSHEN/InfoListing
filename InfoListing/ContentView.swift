@@ -14,6 +14,13 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+                .onAppear{
+                    Task {
+                        let list = try? await NetworkManager().fetchContent()
+                        print(list)
+                    }
+
+                }
         }
         .padding()
     }
