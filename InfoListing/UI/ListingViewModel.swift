@@ -11,11 +11,13 @@ import SwiftUI
 class ListViewModel: ObservableObject {
     typealias ListItem = NetworkManager.ListItem
     private var networkManager: NetworkManaging
-    @Published var listGroups: [ListGroup]
+    @Published private(set) var listGroups: [ListGroup]
     // a Dict of Bool weather section should be expanded
     @Published var expandState: [Int : Bool]
     @Published var isAscending: Bool
     @Published var imageName: String
+    @Published var isError: Bool
+    @Published var error: Error?
 
     init(networkManager: NetworkManaging = NetworkManager()) {
         self.networkManager = networkManager
@@ -23,6 +25,7 @@ class ListViewModel: ObservableObject {
         expandState = [:]
         isAscending = true
         imageName = "arrow.up.square"
+        isError = false
         Task {
             await fetchList()
         }
@@ -44,7 +47,7 @@ class ListViewModel: ObservableObject {
         }
     }
 
-    private func fetchList() async {
+    func fetchList() async {
         do {
             let rawList = try await networkManager.fetchList()
             DispatchQueue.main.async {
@@ -54,7 +57,8 @@ class ListViewModel: ObservableObject {
                 }
             }
         } catch {
-            print(error)
+            isError = true
+            self.error = error
             return
         }
     }
