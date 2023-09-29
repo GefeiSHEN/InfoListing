@@ -68,10 +68,10 @@ class ListViewModel: ObservableObject {
             }
             return !name.isEmpty
         }
+
         //sort by group id and group item values
         var listGroups: [ListGroup] = []
         let groupedItems = Dictionary(grouping: filteredList, by: { $0.listId })
-
         for (key, value) in groupedItems {
             let listGroup = ListGroup(id: key, groupItems: value.sorted())
             listGroups.append(listGroup)

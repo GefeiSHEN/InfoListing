@@ -36,7 +36,8 @@ struct ListingView: View {
             Text(viewModel.error?.localizedDescription ?? "An Error Occured")
         }
     }
-
+    
+    // Button to control sort order
     var sortButton: some View {
         Button{
             viewModel.toggleOrder()
@@ -44,7 +45,8 @@ struct ListingView: View {
             Image(systemName: viewModel.imageName)
         }
     }
-
+    
+    // Loading animation
     var loadIndicator: some View {
         VStack {
             ProgressView()
@@ -52,6 +54,7 @@ struct ListingView: View {
         }
     }
 
+    // The actual listings
     var listing: some View {
         List {
             ForEach(viewModel.listGroups, id: \.id) { group in

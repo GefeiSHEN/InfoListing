@@ -9,6 +9,9 @@ import Foundation
 import XCTest
 @testable import InfoListing
 
+/**
+    A mock of NetworkManager.
+ */
 class MockNetworkManager: NetworkManaging {
     var fetchListInvocationCount: Int = 0
     var fetchListResult: [InfoListing.NetworkManager.ListItem] = []

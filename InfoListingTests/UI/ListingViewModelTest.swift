@@ -56,6 +56,7 @@ class ListViewModelTests: XCTestCase {
         await fulfillment(of: [exp], timeout: 1)
 
         XCTAssertFalse(sut.listGroups.isEmpty)
+        XCTAssertEqual(mockNetworkManager.fetchListInvocationCount, 2)
         XCTAssertEqual(sut.expandState[1], true)
         XCTAssertFalse(sut.isError)
         XCTAssertNil(sut.error)

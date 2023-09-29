@@ -7,6 +7,11 @@
 
 import Foundation
 
+// Adapted from https://theiosdude.medium.com/urlsession-stubbing-network-responses-for-unit-tests-a8bc572739f5
+
+/**
+    A mock of URLProtocol for testing.
+ */
 class MockURLProtocol: URLProtocol {
     static var requestHandler: ((URLRequest) -> (HTTPURLResponse, Data))?
     override class func canInit(with request: URLRequest) -> Bool { return true }
