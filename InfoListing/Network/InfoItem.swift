@@ -8,7 +8,11 @@
 import Foundation
 
 extension NetworkManager {
-    struct ListItem: Identifiable, Codable {
+    struct ListItem: Identifiable, Codable, Comparable {
+        static func < (lhs: NetworkManager.ListItem, rhs: NetworkManager.ListItem) -> Bool {
+            return lhs.name ?? "" < rhs.name ?? ""
+        }
+        
         var id: Int
         var listId: Int
         var name: String?

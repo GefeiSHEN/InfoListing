@@ -9,12 +9,13 @@ import Foundation
 import SwiftUI
 
 class ListViewModel: ObservableObject {
+    typealias ListItem = NetworkManager.ListItem
     private var networkManager: NetworkManaging
-    @Published var listItems: [NetworkManager.ListItem]
+    @Published var listGroups: [ListGroup]
 
     init(networkManager: NetworkManaging = NetworkManager()) {
         self.networkManager = networkManager
-        listItems = []
+        listGroups = []
         Task {
             await fetchList()
         }
@@ -23,18 +24,48 @@ class ListViewModel: ObservableObject {
     private func fetchList() async {
         do {
             let rawList = try await networkManager.fetchList()
-            let filteredList = rawList.filter { item in
-                guard let name = item.name else {
-                    return false
-                }
-                return !name.isEmpty
-            }
             DispatchQueue.main.async {
-                self.listItems = filteredList
+                self.listGroups = self.processList(rawList)
             }
         } catch {
             print(error)
             return
         }
+    }
+
+    private func processList(_ rawList: [ListItem]) -> [ListGroup] {
+        // Clear entires with empty or nil names
+        let filteredList = rawList.filter { item in
+            guard let name = item.name else {
+                return false
+            }
+            return !name.isEmpty
+        }
+        //sort by group id and group item values
+        var listGroups: [ListGroup] = []
+        let groupedItems = Dictionary(grouping: filteredList, by: { $0.listId })
+
+        for (key, value) in groupedItems {
+            let listGroup = ListGroup(groupId: key, groupItems: value.sorted())
+            listGroups.append(listGroup)
+        }
+
+        return listGroups.sorted()
+    }
+}
+
+extension ListViewModel {
+    struct ListGroup: Identifiable, Comparable {
+        static func < (lhs: ListViewModel.ListGroup, rhs: ListViewModel.ListGroup) -> Bool {
+            lhs.groupId < rhs.groupId
+        }
+        
+        static func == (lhs: ListViewModel.ListGroup, rhs: ListViewModel.ListGroup) -> Bool {
+            return lhs.id == rhs.id
+        }
+        
+        var id = UUID()
+        var groupId: Int
+        var groupItems: [ListItem]
     }
 }
