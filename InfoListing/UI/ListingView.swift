@@ -57,15 +57,15 @@ struct ListingView: View {
             ForEach(viewModel.listGroups, id: \.id) { group in
                 // custom binding
                 let isExpandedBinding = Binding<Bool>(
-                    get: { viewModel.expandState[group.groupId] ?? false },
-                    set: { val in viewModel.expandState[group.groupId] = val }
+                    get: { viewModel.expandState[group.id] ?? false },
+                    set: { val in viewModel.expandState[group.id] = val }
                 )
                 Section(isExpanded: isExpandedBinding) {
                     ForEach(group.groupItems, id: \.id) { item in
                         Text(item.name ?? "N/A")
                     }
                 } header: {
-                    Text("Group \(group.groupId)")
+                    Text("Group \(group.id)")
                 }
             }
         }

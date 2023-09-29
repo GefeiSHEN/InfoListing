@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class ListViewModel: ObservableObject {
     typealias ListItem = NetworkManager.ListItem
     private var networkManager: NetworkManaging
@@ -31,10 +32,6 @@ class ListViewModel: ObservableObject {
         }
     }
 
-    func toggleGroup(_ groupId: Int) {
-        expandState[groupId]?.toggle()
-    }
-
     func toggleOrder() {
         isAscending.toggle()
 
@@ -53,7 +50,7 @@ class ListViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.listGroups = self.processList(rawList)
                 self.listGroups.forEach { group in
-                    self.expandState[group.groupId] = true
+                    self.expandState[group.id] = true
                 }
             }
         } catch {
@@ -76,7 +73,7 @@ class ListViewModel: ObservableObject {
         let groupedItems = Dictionary(grouping: filteredList, by: { $0.listId })
 
         for (key, value) in groupedItems {
-            let listGroup = ListGroup(groupId: key, groupItems: value.sorted())
+            let listGroup = ListGroup(id: key, groupItems: value.sorted())
             listGroups.append(listGroup)
         }
 
@@ -87,15 +84,14 @@ class ListViewModel: ObservableObject {
 extension ListViewModel {
     struct ListGroup: Identifiable, Comparable {
         static func < (lhs: ListViewModel.ListGroup, rhs: ListViewModel.ListGroup) -> Bool {
-            lhs.groupId < rhs.groupId
+            lhs.id < rhs.id
         }
         
         static func == (lhs: ListViewModel.ListGroup, rhs: ListViewModel.ListGroup) -> Bool {
             return lhs.id == rhs.id
         }
         
-        var id = UUID()
-        var groupId: Int
+        var id: Int
         var groupItems: [ListItem]
     }
 }

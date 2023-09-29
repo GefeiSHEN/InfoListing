@@ -46,7 +46,7 @@ class NetworkManager: NetworkManaging {
 }
 
 extension NetworkManager {
-    enum NetworkError: Error {
+    enum NetworkError: Error, Equatable {
         case invalidURL
         case serverError(statusCode: Int)
         case unknown
