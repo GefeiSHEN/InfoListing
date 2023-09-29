@@ -11,7 +11,7 @@ import SwiftUI
 struct InfoListingApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ListingView()
         }
     }
 }
