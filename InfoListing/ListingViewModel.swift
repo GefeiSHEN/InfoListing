@@ -12,12 +12,35 @@ class ListViewModel: ObservableObject {
     typealias ListItem = NetworkManager.ListItem
     private var networkManager: NetworkManaging
     @Published var listGroups: [ListGroup]
+    // a Dict of Bool weather section should be expanded
+    @Published var expandState: [Int : Bool]
+    @Published var isAscending: Bool
+    @Published var imageName: String
 
     init(networkManager: NetworkManaging = NetworkManager()) {
         self.networkManager = networkManager
         listGroups = []
+        expandState = [:]
+        isAscending = true
+        imageName = "arrow.up.square"
         Task {
             await fetchList()
+        }
+    }
+
+    func toggleGroup(_ groupId: Int) {
+        expandState[groupId]?.toggle()
+    }
+
+    func toggleOrder() {
+        isAscending.toggle()
+
+        withAnimation{
+            imageName = isAscending ? "arrow.up.square" : "arrow.down.square"
+            listGroups.reverse()
+            for index in listGroups.indices {
+                listGroups[index].groupItems.reverse()
+            }
         }
     }
 
@@ -26,6 +49,9 @@ class ListViewModel: ObservableObject {
             let rawList = try await networkManager.fetchList()
             DispatchQueue.main.async {
                 self.listGroups = self.processList(rawList)
+                self.listGroups.forEach { group in
+                    self.expandState[group.groupId] = true
+                }
             }
         } catch {
             print(error)
